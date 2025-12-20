@@ -215,12 +215,26 @@ function extractBlockState (name, path, full = false) {
       name = name.replace(/minecraft:/, '')
       const t = JSON.parse(fs.readFileSync(path + name + '.json', 'utf8'))
       if (full) return t
+
+      if (t.multipart) {
+        return t.multipart[0].apply.model
+      }
+
       const firstVariant = t.variants[Object.keys(t.variants)[0]]
       return firstVariant.model || firstVariant[0].model
     } catch (err) {
       return null
     }
   }
+}
+
+function tryGetName (model) {
+  if (model?.type === 'minecraft:condition') {
+    return model.entries[0].model.model
+  } else if (model?.type === 'minecraft:special') {
+    return model.base
+  }
+  return null
 }
 
 function extractModel (name, path, full = false) {
@@ -248,9 +262,9 @@ function extractModel (name, path, full = false) {
       if (t.model) {
         switch (t.model.type) {
           case 'minecraft:special': return extractModel(t.model.base, path)
-          case 'minecraft:select': return extractModel(t.model.fallback.model || t.model.fallback.entries[0].model.model, path)
+          case 'minecraft:select': return extractModel(tryGetName(t.model.fallback) || t.model.fallback.model || t.model.fallback.entries[0].model.model, path)
           case 'minecraft:model': return extractModel(t.model.model, path)
-          case 'minecraft:condition': return extractModel(t.model.on_false.fallback.model || t.model.on_false.fallback.entries[0].model.model, path)
+          case 'minecraft:condition': return extractModel(t.model.on_false.fallback?.model ?? t.model.on_false.fallback?.entries[0].model.model ?? tryGetName(t.model.on_false), path)
           case 'minecraft:range_dispatch': return extractModel(t.model.entries[0].model.model, path)
           default: throw new Error('Unhandled type ' + t.model.type)
         }
