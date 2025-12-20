@@ -5,6 +5,14 @@ const fs = require('fs-extra')
 function getMinecraftFiles (minecraftVersion, temporaryDir, cb) {
   const jarPath = temporaryDir + '/' + minecraftVersion + '.jar'
   const unzippedFilesDir = temporaryDir + '/' + minecraftVersion
+
+  if (fs.existsSync(jarPath) && fs.existsSync(unzippedFilesDir)) {
+    Promise.resolve().then(() => {
+      cb(null, unzippedFilesDir)
+    })
+    return
+  }
+
   fs.mkdirpSync(unzippedFilesDir)
   downloadClient(minecraftVersion, jarPath, async (err) => {
     if (err) {
