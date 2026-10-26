@@ -3,6 +3,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const getMinecraftFiles = require('./get_minecraft_files')
+const { addChestModels } = require('./chest_models')
 
 if (process.argv.length !== 5) {
   console.log('Usage : node image_names.js <version1,version2,...> <output_dir> <temporary_dir>')
@@ -351,6 +352,8 @@ function extract (minecraftVersion, outputDir, temporaryDir, cb) {
     getBlocks(unzippedFilesDir, outputDir + '/blocks_textures.json', blockMapping[minecraftVersion], minecraftVersion)
     getModels(unzippedFilesDir, outputDir + '/blocks_states.json', outputDir + '/blocks_models.json', blockMapping[minecraftVersion], minecraftVersion)
     copyTextures(unzippedFilesDir, outputDir)
+    // (chests, which the game draws with a block entity renderer: their models from their textures)
+    addChestModels(outputDir)
     generateTextureContent(outputDir)
     cb()
   })

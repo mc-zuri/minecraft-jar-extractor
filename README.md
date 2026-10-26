@@ -17,6 +17,14 @@ and get a directory containing the name->texture mapping and the textures.
 
 Result of that currently online at [minecraft-assets](https://github.com/rom1504/minecraft-assets)
 
+Chests are drawn by the game's block entity renderer, so the jar has no block model of them. The extractor builds them
+(`chest_models.js`) from the chest textures, copied into `blocks/` as `entity__chest__<name>.png`, as that renderer
+lays them out (the classic model before 1.15, ChestModel's single, left and right ones after). A chest's
+`blocks_states.json` variants are keyed by `facing`, `block_entity.pair` (the side its other half is on, `none` when
+single) and `block_entity.lid` (how far its lid is open: 0 shut to 9, a quarter turn up), which a viewer works out
+(prismarine-viewer: from the chest's type, or its neighbours before 1.13, and from the block action that opens it).
+`node chest_models.js <version folder>...` adds them to folders extracted before.
+
 ## lang extractor
 
 Just run `node lang.js <version1,version2,...> <output_dir> <temporary_dir>`
