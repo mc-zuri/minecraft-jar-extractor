@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const getMinecraftFiles = require('./get_minecraft_files')
 const { addChestModels } = require('./chest_models')
+const { addBlockEntityModels } = require('./block_entity_models')
 
 if (process.argv.length !== 5) {
   console.log('Usage : node image_names.js <version1,version2,...> <output_dir> <temporary_dir>')
@@ -32,7 +33,8 @@ const itemMapping = {
     cooked_fish: 'cooked_salmon',
     dye: 'dye_black',
     potion: 'bottle_drinkable',
-    skull: 'skull_char'
+    skull: 'skull_char',
+    monster_egg: 'stone_monster_egg'
   },
   1.9: {
     wooden_door: 'oak_door',
@@ -43,7 +45,8 @@ const itemMapping = {
     skull: 'skull_char',
     boat: 'oak_boat',
     splash_potion: 'bottle_splash',
-    lingering_potion: 'bottle_lingering'
+    lingering_potion: 'bottle_lingering',
+    monster_egg: 'stone_monster_egg'
   },
   '1.10': {
     wooden_door: 'oak_door',
@@ -54,7 +57,8 @@ const itemMapping = {
     skull: 'skull_char',
     boat: 'oak_boat',
     splash_potion: 'bottle_splash',
-    lingering_potion: 'bottle_lingering'
+    lingering_potion: 'bottle_lingering',
+    monster_egg: 'stone_monster_egg'
   },
   '1.11.2': {
     wooden_door: 'oak_door',
@@ -66,7 +70,8 @@ const itemMapping = {
     boat: 'oak_boat',
     totem_of_undying: 'totem',
     splash_potion: 'bottle_splash',
-    lingering_potion: 'bottle_lingering'
+    lingering_potion: 'bottle_lingering',
+    monster_egg: 'stone_monster_egg'
   },
   1.12: {
     wooden_door: 'oak_door',
@@ -204,7 +209,11 @@ const blockMapping = {
     carpet: 'white_carpet',
     double_plant: 'sunflower',
     double_stone_slab2: 'red_sandstone_double_slab',
-    stone_slab2: 'red_sandstone_slab'
+    stone_slab2: 'red_sandstone_slab',
+    concrete: 'white_concrete',
+    concrete_powder: 'white_concrete_powder',
+    light_gray_glazed_terracotta: 'silver_glazed_terracotta',
+    monster_egg: 'stone_monster_egg'
   },
   1.13: {
   }
@@ -366,8 +375,9 @@ function extract (minecraftVersion, outputDir, temporaryDir, cb) {
     getBlocks(unzippedFilesDir, outputDir + '/blocks_textures.json', blockMapping[minecraftVersion], minecraftVersion)
     getModels(unzippedFilesDir, outputDir + '/blocks_states.json', outputDir + '/blocks_models.json', blockMapping[minecraftVersion], minecraftVersion)
     copyTextures(unzippedFilesDir, outputDir)
-    // (chests, which the game draws with a block entity renderer: their models from their textures)
+    // (chests and the other blocks the game draws with block entity renderers: their models from their textures)
     addChestModels(outputDir)
+    addBlockEntityModels(outputDir)
     generateTextureContent(outputDir)
     cb()
   })

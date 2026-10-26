@@ -25,6 +25,14 @@ single) and `block_entity.lid` (how far its lid is open: 0 shut to 9, a quarter 
 (prismarine-viewer: from the chest's type, or its neighbours before 1.13, and from the block action that opens it).
 `node chest_models.js <version folder>...` adds them to folders extracted before.
 
+The other blocks drawn by block entity renderers get their models the same way (`block_entity_models.js`, from their
+textures copied into `blocks/` as `entity__<path>.png`): beds, shulker boxes (whose lid rises and turns by
+`block_entity.lid`, as a chest's opens), signs, wall signs, hanging signs, banners (the flag in the base colour of the
+banner's dye), skeleton, wither skeleton, zombie, creeper and player heads, decorated pots, the bell of bells, conduits,
+end portals and end gateways. Floor signs, banners and heads turn in steps of 22.5 degrees: their variants' quarter turns
+and their elements' turn of up to 45 degrees. Dragon and piglin heads and copper golem statues are not built.
+`node block_entity_models.js <version folder>...` adds them to folders extracted before.
+
 ## lang extractor
 
 Just run `node lang.js <version1,version2,...> <output_dir> <temporary_dir>`
